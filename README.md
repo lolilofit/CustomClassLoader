@@ -4,4 +4,4 @@
 2. Выполнить 
 ```mvn clean install```
 3. Выполнить java -jar 
-```dateutils-jar-with-dependencies.jar```
+```dateutils-jar-with-dependencies.jar [path_to_dir]```
