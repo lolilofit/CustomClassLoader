@@ -8,12 +8,13 @@ import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
-        String path = args.length == 0 ? "C:\\Users\\User\\IdeaProjects\\javaopt3\\A\\" : args[0];
+        String path = args.length == 0 ? "A/" : args[0];
+        String packageName = args.length < 2 ? "ru.nsu.ojp2020." : args[1];
 
         File dir = new File(path);
         String[] modules = dir.list();
 
-        ALoader aLoader = new ALoader(path, ClassLoader.getSystemClassLoader());
+        ALoader aLoader = new ALoader(path, packageName, ClassLoader.getSystemClassLoader());
 
         assert modules != null;
 

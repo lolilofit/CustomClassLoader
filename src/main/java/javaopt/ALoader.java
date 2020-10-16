@@ -3,61 +3,32 @@ package javaopt;
 import java.io.*;
 
 public class ALoader extends ClassLoader {
-    private String pathtobin;
+    private final String pathtobin;
+    private final String packageName;
 
-    public ALoader(String pathtobin, ClassLoader parent) {
+    public ALoader(String pathtobin, String packageName, ClassLoader parent) {
         super(parent);
         this.pathtobin = pathtobin;
+        this.packageName = packageName;
     }
+
 
     @Override
     public Class<?> findClass(String className) throws ClassNotFoundException {
         try {
-            /**
-             * Получем байт-код из файла и загружаем класс в рантайм
-             */
-            byte b[] = fetchClassFromFS(pathtobin + className + ".class");
-            return defineClass("ru.nsu.ojp2020." + className, b, 0, b.length);
-        } catch (FileNotFoundException ex) {
-            return super.findClass(className);
+            byte b[] = readBytes(pathtobin + className + ".class");
+            return defineClass(packageName + className, b, 0, b.length);
         } catch (IOException ex) {
             return super.findClass(className);
         }
-
     }
 
-    /**
-     * Взято из www.java-tips.org/java-se-tips/java.io/reading-a-file-into-a-byte-array.html
-     */
-    private byte[] fetchClassFromFS(String path) throws FileNotFoundException, IOException {
+    private byte[] readBytes(String path) throws IOException {
         InputStream is = new FileInputStream(new File(path));
 
-        // Get the size of the file
-        long length = new File(path).length();
+        byte[] bytes = is.readAllBytes();
 
-        if (length > Integer.MAX_VALUE) {
-            // File is too large
-        }
-
-        // Create the byte array to hold the data
-        byte[] bytes = new byte[(int)length];
-
-        // Read in the bytes
-        int offset = 0;
-        int numRead = 0;
-        while (offset < bytes.length
-                && (numRead=is.read(bytes, offset, bytes.length-offset)) >= 0) {
-            offset += numRead;
-        }
-
-        // Ensure all the bytes have been read in
-        if (offset < bytes.length) {
-            throw new IOException("Could not completely read file "+path);
-        }
-
-        // Close the input stream and return bytes
         is.close();
         return bytes;
-
     }
 }
